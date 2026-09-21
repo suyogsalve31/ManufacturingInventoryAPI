@@ -1,6 +1,7 @@
 using ManufacturigInventoryAPI.Data;
 using ManufacturigInventoryAPI.Repositories;
 using ManufacturigInventoryAPI.Services;
+using ManufacturingInventoryAPI.Middleware;
 using ManufacturingInventoryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

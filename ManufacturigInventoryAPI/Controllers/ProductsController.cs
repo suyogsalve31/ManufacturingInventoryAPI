@@ -19,6 +19,7 @@ namespace ManufacturigInventoryAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetAll()
         {
+
             var products = await _productService.GetAllAsync();
 
             return Ok(products);

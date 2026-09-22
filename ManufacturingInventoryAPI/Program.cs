@@ -1,9 +1,8 @@
-using ManufacturigInventoryAPI.Data;
-using ManufacturigInventoryAPI.Repositories;
-using ManufacturigInventoryAPI.Services;
-using ManufacturingInventoryAPI.Middleware;
 using ManufacturingInventoryAPI.Repositories;
+using ManufacturingInventoryAPI.Middleware;
 using Microsoft.EntityFrameworkCore;
+using ManufacturingInventoryAPI.Services;
+using ManufacturingInventoryAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

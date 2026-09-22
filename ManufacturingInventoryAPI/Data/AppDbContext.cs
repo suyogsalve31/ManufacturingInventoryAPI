@@ -1,7 +1,7 @@
-﻿using ManufacturigInventoryAPI.Models;
+﻿using ManufacturingInventoryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ManufacturigInventoryAPI.Data
+namespace ManufacturingInventoryAPI.Data
 {
     public class AppDbContext:DbContext
     {

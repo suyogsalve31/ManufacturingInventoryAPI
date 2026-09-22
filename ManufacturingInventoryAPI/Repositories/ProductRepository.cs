@@ -1,6 +1,5 @@
-﻿using ManufacturigInventoryAPI.Data;
-using ManufacturigInventoryAPI.Models;
-using ManufacturigInventoryAPI.Repositories;
+﻿using ManufacturingInventoryAPI.Data;
+using ManufacturingInventoryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ManufacturingInventoryAPI.Repositories
@@ -14,11 +13,37 @@ namespace ManufacturingInventoryAPI.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<(IEnumerable<Product> Products, int TotalCount)> GetAllAsync(
+            string? searchTerm,
+            bool? isActive,
+            int pageNumber,
+            int pageSize)
         {
-            return await _context.Products
+            var query = _context.Products
                 .AsNoTracking()
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(p =>
+                    p.ProductCode.Contains(searchTerm) ||
+                    p.ProductName.Contains(searchTerm));
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == isActive.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var products = await query
+                .OrderBy(p => p.ProductId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return (products, totalCount);
         }
 
         public async Task<Product?> GetByIdAsync(int id)

@@ -1,11 +1,10 @@
-﻿using ManufacturigInventoryAPI.Models;
-using ManufacturingInventoryAPI.DTOs;
+﻿using ManufacturingInventoryAPI.DTOs;
 
-namespace ManufacturigInventoryAPI.Services
+namespace ManufacturingInventoryAPI.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductResponseDto>> GetAllAsync();
+        Task<PagedResultDto<ProductResponseDto>> GetAllAsync(ProductQueryDto query);
 
         Task<ProductResponseDto?> GetByIdAsync(int id);
         Task<ProductResponseDto> CreateAsync(ProductCreateDto productDto);

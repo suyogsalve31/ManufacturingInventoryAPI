@@ -1,4 +1,4 @@
-﻿namespace ManufacturigInventoryAPI.Models
+﻿namespace ManufacturingInventoryAPI.Models
 {
     public class Product
     {

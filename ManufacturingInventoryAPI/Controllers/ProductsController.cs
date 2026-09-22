@@ -1,5 +1,4 @@
-﻿using ManufacturigInventoryAPI.Models;
-using ManufacturigInventoryAPI.Services;
+﻿using ManufacturingInventoryAPI.Services;
 using ManufacturingInventoryAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,12 +16,12 @@ namespace ManufacturigInventoryAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetAll()
+        public async Task<ActionResult<PagedResultDto<ProductResponseDto>>> GetAll(
+    [FromQuery] ProductQueryDto query)
         {
+            var result = await _productService.GetAllAsync(query);
 
-            var products = await _productService.GetAllAsync();
-
-            return Ok(products);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

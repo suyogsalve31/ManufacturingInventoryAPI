@@ -1,6 +1,6 @@
 @ManufacturigInventoryAPI_HostAddress = http://localhost:5113
 
-GET {{ManufacturigInventoryAPI_HostAddress}}/weatherforecast/
+GET {{ManufacturingInventoryAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

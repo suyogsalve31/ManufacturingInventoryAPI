@@ -16,12 +16,16 @@ namespace ManufacturigInventoryAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResultDto<ProductResponseDto>>> GetAll(
-    [FromQuery] ProductQueryDto query)
+        public async Task<ActionResult<PagedResultDto<ProductResponseDto>>> GetAll([FromQuery] ProductQueryDto query)
         {
             var result = await _productService.GetAllAsync(query);
 
-            return Ok(result);
+            return Ok(new ApiResponseDto<PagedResultDto<ProductResponseDto>>
+            {
+                Success = true,
+                Message = "Products fetched successfully.",
+                Data = result
+            });
         }
 
         [HttpGet("{id}")]
@@ -34,7 +38,12 @@ namespace ManufacturigInventoryAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(product);
+            return Ok(new ApiResponseDto<ProductResponseDto>
+            {
+                Success = true,
+                Message = "Product fetched successfully.",
+                Data = product
+            });
         }
 
         [HttpPost]
@@ -45,7 +54,12 @@ namespace ManufacturigInventoryAPI.Controllers
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = createdProduct.ProductId },
-                createdProduct);
+                new ApiResponseDto<ProductResponseDto>
+            {
+                Success = true,
+                Message = "Product created successfully.",
+                Data = createdProduct
+            });
         }
 
         [HttpPut("{id}")]
@@ -58,7 +72,12 @@ namespace ManufacturigInventoryAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(updatedProduct);
+            return Ok(new ApiResponseDto<ProductResponseDto>
+            {
+                Success = true,
+                Message = "Product updated successfully.",
+                Data = updatedProduct
+            });
         }
 
         [HttpDelete("{id}")]

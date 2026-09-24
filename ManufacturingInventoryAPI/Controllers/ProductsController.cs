@@ -1,6 +1,7 @@
 ﻿using ManufacturingInventoryAPI.Services;
 using ManufacturingInventoryAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ManufacturigInventoryAPI.Controllers
 {
@@ -28,6 +29,7 @@ namespace ManufacturigInventoryAPI.Controllers
             });
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductResponseDto>> GetById(int id)
         {

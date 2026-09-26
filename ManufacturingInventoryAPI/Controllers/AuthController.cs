@@ -9,18 +9,23 @@ namespace ManufacturingInventoryAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ITokenService _tokenService;
+        private readonly IUserService _userService;
 
-        public AuthController(ITokenService tokenService)
+        public AuthController(
+            ITokenService tokenService,
+            IUserService userService)
         {
             _tokenService = tokenService;
+            _userService = userService;
         }
 
 
         [HttpPost("login")]
-        public IActionResult Login(LoginRequestDto request)
+        public async Task<IActionResult>Login(LoginRequestDto request)
         {
-            if (request.Username != "admin" ||
-                request.Password != "Admin@123")
+            var user = await _userService.GetByUsernameAsync(request.Username);
+
+            if (user == null || !user.IsActive)
             {
                 return Unauthorized(new ApiResponseDto<object>
                 {
@@ -30,7 +35,17 @@ namespace ManufacturingInventoryAPI.Controllers
                 });
             }
 
-            var token = _tokenService.GenerateToken(request.Username);
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
+                return Unauthorized(new ApiResponseDto<object>
+                {
+                    Success = false,
+                    Message = "Invalid username or password.",
+                    Data = null
+                });
+            }
+
+            var token = _tokenService.GenerateToken(user.UserName, user.Role);
 
             return Ok(new ApiResponseDto<LoginResponseDto>
             {

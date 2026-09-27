@@ -1,11 +1,17 @@
-﻿using ManufacturingInventoryAPI.Models;
+﻿using ManufacturingInventoryAPI.DTOs;
 
 namespace ManufacturingInventoryAPI.Services
 {
     public interface IUserService
     {
-        Task<User?> GetByUsernameAsync(string username);
+        Task<IEnumerable<UserResponseDto>> GetAllAsync();
 
-        Task<User> CreateAsync(User user);
+        Task<UserResponseDto?> GetByUsernameAsync(string username);
+
+        Task<UserResponseDto> CreateAsync(UserCreateDto userDto);
+
+        Task<UserResponseDto> ValidateCredentialsAsync(
+            string username,
+            string password);
     }
 }

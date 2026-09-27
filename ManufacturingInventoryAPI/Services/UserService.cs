@@ -1,4 +1,5 @@
-﻿using ManufacturingInventoryAPI.Models;
+﻿using ManufacturingInventoryAPI.DTOs;
+using ManufacturingInventoryAPI.Models;
 using ManufacturingInventoryAPI.Repositories;
 
 namespace ManufacturingInventoryAPI.Services
@@ -12,14 +13,90 @@ namespace ManufacturingInventoryAPI.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User?> GetByUsernameAsync(string username)
+
+        public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
         {
-            return await _userRepository.GetByUsernameAsync(username);
+            var users = await _userRepository.GetAllAsync();
+
+            return users.Select(user => new UserResponseDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                Role = user.Role,
+                IsActive = user.IsActive,
+                CreatedDate = user.CreatedDate
+            });
         }
 
-        public async Task<User> CreateAsync(User user)
+
+        public async Task<UserResponseDto?> GetByUsernameAsync(string username)
         {
-            return await _userRepository.CreateAsync(user);
+            var user = await _userRepository.GetByUsernameAsync(username);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return new UserResponseDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                Role = user.Role,
+                IsActive = user.IsActive,
+                CreatedDate = user.CreatedDate
+            };
+        }
+
+
+        public async Task<UserResponseDto?> ValidateCredentialsAsync(
+                                                    string username,
+                                                    string password)
+        {
+            var user = await _userRepository.GetByUsernameAsync(username);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            {
+                return null;
+            }
+
+            return new UserResponseDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                Role = user.Role,
+                IsActive = user.IsActive,
+                CreatedDate = user.CreatedDate
+            };
+        }
+
+
+        public async Task<UserResponseDto> CreateAsync(UserCreateDto userDto)
+        {
+            var user = new User
+            {
+                UserName = userDto.UserName,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
+                Role = userDto.Role,
+                IsActive = true,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            var createdUser = await _userRepository.CreateAsync(user);
+
+            return new UserResponseDto
+            {
+                UserId = createdUser.UserId,
+                UserName = createdUser.UserName,
+                Role = createdUser.Role,
+                IsActive = createdUser.IsActive,
+                CreatedDate = createdUser.CreatedDate
+            };
         }
     }
 }

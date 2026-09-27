@@ -23,19 +23,11 @@ namespace ManufacturingInventoryAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult>Login(LoginRequestDto request)
         {
-            var user = await _userService.GetByUsernameAsync(request.Username);
+            var user = await _userService.ValidateCredentialsAsync(
+                                                request.Username,
+                                                request.Password);
 
-            if (user == null || !user.IsActive)
-            {
-                return Unauthorized(new ApiResponseDto<object>
-                {
-                    Success = false,
-                    Message = "Invalid username or password.",
-                    Data = null
-                });
-            }
-
-            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            if (user == null)
             {
                 return Unauthorized(new ApiResponseDto<object>
                 {

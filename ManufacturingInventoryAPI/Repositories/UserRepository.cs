@@ -13,6 +13,14 @@ namespace ManufacturingInventoryAPI.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .OrderBy(u => u.UserId)
+                .ToListAsync();
+        }
+
         public async Task<User?> GetByUsernameAsync(string username)
         {
             return await _context.Users

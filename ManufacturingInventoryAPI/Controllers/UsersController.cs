@@ -21,6 +21,7 @@ namespace ManufacturingInventoryAPI.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> Create(
                                                         UserCreateDto userDto)
         {

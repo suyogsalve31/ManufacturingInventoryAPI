@@ -78,6 +78,13 @@ namespace ManufacturingInventoryAPI.Services
 
         public async Task<UserResponseDto> CreateAsync(UserCreateDto userDto)
         {
+            var existingUser = await _userRepository.GetByUsernameAsync(userDto.UserName);
+
+            if (existingUser != null)       
+            {
+                throw new InvalidOperationException("Username already exists.");
+            }
+
             var user = new User
             {
                 UserName = userDto.UserName,

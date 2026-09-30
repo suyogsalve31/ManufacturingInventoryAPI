@@ -22,6 +22,26 @@ namespace ManufacturingInventoryAPI.Middleware
             {
                 await _next(context);
             }
+
+
+            catch (InvalidOperationException ex)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Response.ContentType = "application/json";
+
+                var response = new
+                {
+                    statusCode = context.Response.StatusCode,
+                    message = ex.Message
+                };
+
+                await context.Response.WriteAsync(
+                    JsonSerializer.Serialize(response)
+                    );
+
+            }
+
+
             catch (Exception ex)
             {
                 _logger.LogError(

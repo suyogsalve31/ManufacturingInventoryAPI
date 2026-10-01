@@ -12,6 +12,8 @@ namespace ManufacturingInventoryAPI.DTOs
         [Required]
         [MinLength(8)]
         [MaxLength(100)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$",
+        ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one number.")]
         public string Password { get; set; } = string.Empty;
 
         [Required]

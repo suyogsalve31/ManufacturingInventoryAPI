@@ -1,4 +1,5 @@
 ﻿using ManufacturingInventoryAPI.DTOs;
+using ManufacturingInventoryAPI.Middleware;
 using ManufacturingInventoryAPI.Models;
 using ManufacturingInventoryAPI.Repositories;
 
@@ -87,14 +88,13 @@ namespace ManufacturingInventoryAPI.Services
 
             if (existingUser != null)       
             {
-                throw new InvalidOperationException("Username already exists.");
+                throw new BusinessException("Username already exists.");
             }
 
             if (!string.Equals(userDto.Role, "Admin", StringComparison.OrdinalIgnoreCase) &&
                 !string.Equals(userDto.Role, "User", StringComparison.OrdinalIgnoreCase))
             {
-                throw new InvalidOperationException(
-                    "Invalid role. Allowed roles are Admin or User.");
+                throw new BusinessException("Invalid role. Allowed roles are Admin or User.");
             }
 
             var user = new User

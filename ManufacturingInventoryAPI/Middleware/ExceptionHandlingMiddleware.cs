@@ -24,7 +24,7 @@ namespace ManufacturingInventoryAPI.Middleware
             }
 
 
-            catch (InvalidOperationException ex)
+            catch (BusinessException ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 context.Response.ContentType = "application/json";
@@ -36,9 +36,7 @@ namespace ManufacturingInventoryAPI.Middleware
                 };
 
                 await context.Response.WriteAsync(
-                    JsonSerializer.Serialize(response)
-                    );
-
+                    JsonSerializer.Serialize(response));
             }
 
 

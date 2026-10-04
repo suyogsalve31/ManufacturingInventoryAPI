@@ -17,8 +17,11 @@ namespace ManufacturingInventoryAPI.DTOs
         public string Password { get; set; } = string.Empty;
 
         [Required]
+        [RegularExpression(@"^(?i:Admin|User)$",
+                ErrorMessage = "Role must be either Admin or User.")]
         public string Role { get; set; } = "User";
 
 
     }
 }
+

@@ -36,6 +36,33 @@ namespace ManufacturingInventoryAPI.Controllers
         }
 
 
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> Update(
+    int id,
+    UserUpdateDto userDto)
+        {
+            var user = await _userService.UpdateAsync(id, userDto);
+
+            if (user == null)
+            {
+                return NotFound(new ApiResponseDto<object>
+                {
+                    Success = false,
+                    Message = "User not found.",
+                    Data = null
+                });
+            }
+
+            return Ok(new ApiResponseDto<UserResponseDto>
+            {
+                Success = true,
+                Message = "User updated successfully.",
+                Data = user
+            });
+        }
+
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponseDto<IEnumerable<UserResponseDto>>>> GetAll()

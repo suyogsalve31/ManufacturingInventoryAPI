@@ -117,5 +117,42 @@ namespace ManufacturingInventoryAPI.Services
                 CreatedDate = createdUser.CreatedDate
             };
         }
+
+
+        public async Task<UserResponseDto?> UpdateAsync(
+    int id,
+    UserUpdateDto userDto)
+        {
+            var existingUser = await _userRepository.GetByUsernameAsync(
+                userDto.UserName);
+
+            if (existingUser != null && existingUser.UserId != id)
+            {
+                throw new BusinessException("Username already exists.");
+            }
+
+            var user = new User
+            {
+                UserName = userDto.UserName,
+                Role = userDto.Role,
+                IsActive = userDto.IsActive
+            };
+
+            var updatedUser = await _userRepository.UpdateAsync(id, user);
+
+            if (updatedUser == null)
+            {
+                return null;
+            }
+
+            return new UserResponseDto
+            {
+                UserId = updatedUser.UserId,
+                UserName = updatedUser.UserName,
+                Role = updatedUser.Role,
+                IsActive = updatedUser.IsActive,
+                CreatedDate = updatedUser.CreatedDate
+            };
+        }
     }
 }

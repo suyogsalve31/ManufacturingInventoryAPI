@@ -13,5 +13,7 @@ namespace ManufacturingInventoryAPI.Services
         Task<UserResponseDto> ValidateCredentialsAsync(
             string username,
             string password);
+
+        Task<UserResponseDto?> UpdateAsync(int id, UserUpdateDto userDto);
     }
 }

@@ -10,10 +10,12 @@ namespace ManufacturingInventoryAPI.Services
 
         Task<UserResponseDto> CreateAsync(UserCreateDto userDto);
 
-        Task<UserResponseDto> ValidateCredentialsAsync(
-            string username,
-            string password);
+        Task<UserResponseDto?> ValidateCredentialsAsync(
+                string username,
+                string password);
 
         Task<UserResponseDto?> UpdateAsync(int id, UserUpdateDto userDto);
+
+        Task<bool> DeactivateAsync(int id);
     }
 }

@@ -2,6 +2,7 @@
 using ManufacturingInventoryAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManufacturingInventoryAPI.Controllers
@@ -22,8 +23,7 @@ namespace ManufacturingInventoryAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> Create(
-                                                        UserCreateDto userDto)
+        public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> Create(UserCreateDto userDto)
         {
             var user = await _userService.CreateAsync(userDto);
 
@@ -38,9 +38,7 @@ namespace ManufacturingInventoryAPI.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> Update(
-    int id,
-    UserUpdateDto userDto)
+        public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> Update(int id,UserUpdateDto userDto)
         {
             var user = await _userService.UpdateAsync(id, userDto);
 
@@ -63,6 +61,34 @@ namespace ManufacturingInventoryAPI.Controllers
         }
 
 
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponseDto<object>>> Deactivate(int id)
+        {
+            var result = await _userService.DeactivateAsync(id);
+
+            if (!result)
+            {
+                return NotFound(new ApiResponseDto<object>
+                {
+                    Success = false,
+                    Message = "User not found.",
+                    Data = null
+                });
+            }
+
+            return Ok(new ApiResponseDto<object>
+            {
+                Success = true,
+                Message = "User deactivated successfully.",
+                Data = null
+            });
+        }
+
+
+
+
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponseDto<IEnumerable<UserResponseDto>>>> GetAll()
@@ -80,8 +106,7 @@ namespace ManufacturingInventoryAPI.Controllers
 
         [HttpGet("{username}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> GetByUsername(
-                                                                        string username)
+        public async Task<ActionResult<ApiResponseDto<UserResponseDto>>> GetByUsername(string username)
         {
             var user = await _userService.GetByUsernameAsync(username);
 

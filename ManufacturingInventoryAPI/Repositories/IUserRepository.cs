@@ -8,6 +8,6 @@ namespace ManufacturingInventoryAPI.Repositories
         Task<User?> GetByUsernameAsync(string username);
         Task<User> CreateAsync(User user);
         Task<User?> UpdateAsync(int id, User user);
-
+        Task<bool> DeactivateAsync(int id);
     }
 }

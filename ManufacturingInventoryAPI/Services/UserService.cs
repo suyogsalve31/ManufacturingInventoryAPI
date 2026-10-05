@@ -154,5 +154,11 @@ namespace ManufacturingInventoryAPI.Services
                 CreatedDate = updatedUser.CreatedDate
             };
         }
+
+
+        public async Task<bool> DeactivateAsync(int id)
+        {
+            return await _userRepository.DeactivateAsync(id);
+        }
     }
 }

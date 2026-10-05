@@ -54,5 +54,23 @@ namespace ManufacturingInventoryAPI.Repositories
 
             return existingUser;
         }
+
+
+        public async Task<bool> DeactivateAsync(int id) 
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == id);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.IsActive = false;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

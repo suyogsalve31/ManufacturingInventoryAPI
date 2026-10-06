@@ -15,9 +15,10 @@ namespace ManufacturingInventoryAPI.Services
         }
 
 
-        public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
+        public async Task<IEnumerable<UserResponseDto>> GetAllAsync(UserQueryDto query)
         {
-            var users = await _userRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync(
+                query.IsActive);
 
             return users.Select(user => new UserResponseDto
             {

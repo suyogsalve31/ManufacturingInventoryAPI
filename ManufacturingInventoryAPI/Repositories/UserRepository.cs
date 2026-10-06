@@ -13,10 +13,18 @@ namespace ManufacturingInventoryAPI.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> GetAllAsync(bool? isActive)
         {
-            return await _context.Users
+            var query = _context.Users
                 .AsNoTracking()
+                .AsQueryable();
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(u => u.IsActive == isActive.Value);
+            }
+
+            return await query
                 .OrderBy(u => u.UserId)
                 .ToListAsync();
         }

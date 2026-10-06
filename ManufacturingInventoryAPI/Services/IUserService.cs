@@ -4,7 +4,7 @@ namespace ManufacturingInventoryAPI.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserResponseDto>> GetAllAsync();
+        Task<IEnumerable<UserResponseDto>> GetAllAsync(UserQueryDto query);
 
         Task<UserResponseDto?> GetByUsernameAsync(string username);
 

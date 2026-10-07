@@ -13,20 +13,37 @@ namespace ManufacturingInventoryAPI.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(bool? isActive)
+        public async Task<(IEnumerable<User> Users, int TotalCount)> GetAllAsync(
+                                                                        string? searchTerm,
+                                                                        bool? isActive,
+                                                                        int pageNumber,
+                                                                        int pageSize)
         {
             var query = _context.Users
                 .AsNoTracking()
                 .AsQueryable();
 
-            if (isActive.HasValue)
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                query = query.Where(u => u.IsActive == isActive.Value);
+                query = query.Where(u =>
+                    u.UserName.Contains(searchTerm));
             }
 
-            return await query
+            if (isActive.HasValue)
+            {
+                query = query.Where(u =>
+                    u.IsActive == isActive.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var users = await query
                 .OrderBy(u => u.UserId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return (users, totalCount);
         }
 
         public async Task<User?> GetByUsernameAsync(string username)

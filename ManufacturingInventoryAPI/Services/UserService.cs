@@ -15,12 +15,18 @@ namespace ManufacturingInventoryAPI.Services
         }
 
 
-        public async Task<IEnumerable<UserResponseDto>> GetAllAsync(UserQueryDto query)
+        public async Task<PagedResultDto<UserResponseDto>> GetAllAsync(UserQueryDto query)
         {
-            var users = await _userRepository.GetAllAsync(
-                query.IsActive);
+            var (users, totalCount) = await _userRepository.GetAllAsync(
+                query.SearchTerm,
+                query.IsActive,
+                query.PageNumber,
+                query.PageSize);
 
-            return users.Select(user => new UserResponseDto
+            var totalPages = (int)Math.Ceiling(
+                totalCount / (double)query.PageSize);
+
+            var data = users.Select(user => new UserResponseDto
             {
                 UserId = user.UserId,
                 UserName = user.UserName,
@@ -28,6 +34,15 @@ namespace ManufacturingInventoryAPI.Services
                 IsActive = user.IsActive,
                 CreatedDate = user.CreatedDate
             });
+
+            return new PagedResultDto<UserResponseDto>
+            {
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Data = data
+            };
         }
 
 

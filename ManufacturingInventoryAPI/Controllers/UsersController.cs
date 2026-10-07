@@ -87,15 +87,13 @@ namespace ManufacturingInventoryAPI.Controllers
 
 
 
-
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponseDto<IEnumerable<UserResponseDto>>>> GetAll([FromQuery] UserQueryDto query)
+        public async Task<ActionResult<ApiResponseDto<PagedResultDto<UserResponseDto>>>> GetAll([FromQuery] UserQueryDto query)
         {
             var users = await _userService.GetAllAsync(query);
 
-            return Ok(new ApiResponseDto<IEnumerable<UserResponseDto>>
+            return Ok(new ApiResponseDto<PagedResultDto<UserResponseDto>>
             {
                 Success = true,
                 Message = "Users fetched successfully.",

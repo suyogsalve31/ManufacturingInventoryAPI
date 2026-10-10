@@ -20,17 +20,21 @@ namespace ManufacturingInventoryAPI.Services
     ProductQueryDto query)
         {
             _logger.LogInformation(
-                "Fetching products. SearchTerm: {SearchTerm}, IsActive: {IsActive}, PageNumber: {PageNumber}, PageSize: {PageSize}",
+                "Fetching products. SearchTerm: {SearchTerm}, IsActive: {IsActive}, PageNumber: {PageNumber}, PageSize: {PageSize}, SortBy: {SortBy}, SortOrder: {SortOrder}",
                 query.SearchTerm,
                 query.IsActive,
                 query.PageNumber,
-                query.PageSize);
+                query.PageSize,
+                query.SortBy,
+                query.SortOrder);
 
             var result = await _productRepository.GetAllAsync(
                 query.SearchTerm,
                 query.IsActive,
                 query.PageNumber,
-                query.PageSize);
+                query.PageSize,
+                query.SortBy,
+                query.SortOrder);
 
             var productDtos = result.Products.Select(product => new ProductResponseDto
             {

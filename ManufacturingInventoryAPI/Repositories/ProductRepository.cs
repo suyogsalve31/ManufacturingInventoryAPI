@@ -14,10 +14,12 @@ namespace ManufacturingInventoryAPI.Repositories
         }
 
         public async Task<(IEnumerable<Product> Products, int TotalCount)> GetAllAsync(
-            string? searchTerm,
-            bool? isActive,
-            int pageNumber,
-            int pageSize)
+                                                                            string? searchTerm,
+                                                                            bool? isActive,
+                                                                            int pageNumber,
+                                                                            int pageSize,
+                                                                            string? sortBy,
+                                                                            string sortOrder)
         {
             var query = _context.Products
                 .AsNoTracking()
@@ -37,14 +39,36 @@ namespace ManufacturingInventoryAPI.Repositories
 
             var totalCount = await query.CountAsync();
 
+            var isDescending = string.Equals(
+                sortOrder, "desc", StringComparison.OrdinalIgnoreCase);
+
+            switch (sortBy?.ToLowerInvariant())
+            {
+                case "productname":
+                    query = isDescending
+                        ? query.OrderByDescending(p => p.ProductName)
+                        : query.OrderBy(p => p.ProductName);
+                    break;
+
+                case "unitprice":
+                    query = isDescending
+                        ? query.OrderByDescending(p => p.UnitPrice)
+                        : query.OrderBy(p => p.UnitPrice);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.ProductId);
+                    break;
+            }
+
             var products = await query
-                .OrderBy(p => p.ProductId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             return (products, totalCount);
         }
+
 
         public async Task<Product?> GetByIdAsync(int id)
         {
